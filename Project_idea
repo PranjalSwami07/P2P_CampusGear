@@ -1,0 +1,50 @@
+# Project Core Architecture & Vision
+
+## 1. Problem Statement
+University students face heavy financial burdens, academic delays, and resource bottlenecks due to single-semester gear requirements (scientific calculators, microcontrollers, drafting boards). Concurrently, thousands of dollars in academic hardware sit idle in dorm rooms, leading to electronic and plastic waste.
+
+Existing solutions rely on noisy, unorganized, and unsearchable chat groups (WhatsApp/Discord) with zero trust, verification, or liability coverage.
+
+---
+
+## 2. Core Pillars & Value Proposition
+
+1. **Campus Identity Lock**: Eliminates the trust deficit by verifying campus credentials before enabling lending/borrowing.
+2. **Structured Search & Inventory**: Replaces chaotic chat threads with searchable, categorized campus gear listings.
+3. **Condition Logging & Liability**: Mitigates fear of damage/non-return via formal terms, security deposit options, and condition logging.
+4. **Sustainability (SDG Alignment)**:
+   - **SDG 12 (Responsible Consumption & Production)**: Extends hardware lifecycles and reduces e-waste.
+   - **SDG 4 (Quality Education)**: Lowers financial barriers for underprivileged students.
+
+---
+
+## 3. Data & Insights (Survey N=41)
+
+### Primary Lender Pain Points:
+- **78.0%** Fear of physical damage
+- **68.3%** Fear of non-return
+- **58.5%** Don't know anyone who needs their idle gear
+
+### Top Requested Trust Features:
+- **65.9%** Campus ID Verification
+- **48.8%** Security Deposit Requirement
+- **43.9%** Formal Terms Regarding Damage
+- **39.0%** User Rating & Review System
+
+---
+
+## 4. AntiGravity Development Roadmap (Next Steps)
+
+If extending this prototype into a full-stack web application:
+
+### Phase 1: Authentication & User Profiles
+- Implement SSO using University Domain Emails (`.edu` / `.ac.in`).
+- Profile badges (Verified Student, Department, Year, Trust Rating).
+
+### Phase 2: Inventory & Request Management
+- Database integration (Supabase / PostgreSQL) for gear inventory.
+- Real-time messaging / rental request system between lenders and borrowers.
+- Image upload support for pre-rental & post-rental equipment condition photos.
+
+### Phase 3: Escrow & Security Deposits
+- Integration with local payment gateways (UPI / Stripe) for holding security deposits during active rentals.

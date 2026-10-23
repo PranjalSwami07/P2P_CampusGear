@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusGear P2P — Student Academic Hardware Lending</title>
+  <meta name="description" content="A peer-to-peer campus equipment lending platform. Borrow and lend scientific calculators, microcontrollers, drafting sets, and lab instruments directly with verified peers.">
+  <meta name="author" content="Yash Patange (125B1B348), Pranjal Swami (125B1B141)">
+
+  <!-- Favicon SVG -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2338bdf8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polygon points='12 2 2 7 12 12 22 7 12 2'/><polyline points='2 17 12 22 22 17'/><polyline points='2 12 12 17 22 12'/></svg>">
+
+  <!-- Core Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Local Zero-Latency Engine Dependencies -->
+  <script src="js/three.min.js"></script>
+  <script src="js/lenis.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+  <!-- Ambient Glowing Spotlight Cursor -->
+  <div id="ambient-cursor"></div>
+
+  <!-- Scroll Progress Indicator -->
+  <div id="scroll-progress"></div>
+
+  <!-- Modern Product-Focused Navigation -->
+  <header class="navbar" id="main-navbar">
+    <div class="container nav-container">
+      <a href="#" class="brand">
+        <div class="brand-icon">
+          <i data-lucide="cpu" style="width:20px; height:20px;"></i>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">CampusGear<span style="color:var(--cyan-primary);">P2P</span></span>
+          <span class="brand-course">Student Hardware Lending Network</span>
+        </div>
+      </a>
+
+      <!-- Category Navigation Links -->
+      <ul class="nav-links">
+        <li><a href="#products-hub" class="nav-link">All Products</a></li>
+        <li><a href="#products-hub" class="nav-link" onclick="window.campusApp.activeCategory='calculators'; window.campusApp.renderGearGrid();">Calculators</a></li>
+        <li><a href="#products-hub" class="nav-link" onclick="window.campusApp.activeCategory='microcontrollers'; window.campusApp.renderGearGrid();">Microcontrollers</a></li>
+        <li><a href="#products-hub" class="nav-link" onclick="window.campusApp.activeCategory='drafting'; window.campusApp.renderGearGrid();">Drafting Sets</a></li>
+        <li><a href="#products-hub" class="nav-link" onclick="window.campusApp.activeCategory='lab'; window.campusApp.renderGearGrid();">Lab & Testing</a></li>
+      </ul>
+
+      <!-- Nav CTA -->
+      <div class="nav-actions">
+        <button class="btn btn-primary btn-sm" data-open-modal="post-gear">
+          <i data-lucide="plus-circle" style="width:16px; height:16px;"></i>
+          <span>+ Lend Equipment</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       Hero Section with Smooth 3D Interactive Canvas
+       ========================================================================= -->
+  <section class="hero-section" id="hero">
+    <div class="container hero-grid">
+      <!-- Left Column: Copy & Actions -->
+      <div class="hero-content">
+        <div>
+          <span class="blueprint-badge pulse">
+            <span>Live Mesh</span> • Peer-to-Peer Academic Gear
+          </span>
+        </div>
+
+        <h1 class="hero-title">
+          Borrow & Lend
+          <span class="gradient-text">Academic Equipment</span>
+        </h1>
+
+        <p class="hero-lead">
+          Save hundreds on single-semester academic hardware. Borrow scientific calculators, Arduino starter kits, drafting sets, and lab instruments directly from fellow verified students in your hostel or department.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#products-hub" class="btn btn-primary">
+            <i data-lucide="arrow-down" style="width:18px; height:18px;"></i>
+            <span>Browse Products</span>
+          </a>
+          <button class="btn btn-outline" data-open-modal="post-gear">
+            <i data-lucide="plus" style="width:18px; height:18px;"></i>
+            <span>List Gear to Lend</span>
+          </button>
+        </div>
+
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-value">100%</span>
+            <span class="stat-label">Verified Peers</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">$0 - $5</span>
+            <span class="stat-label">Affordable Sharing</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">Instant</span>
+            <span class="stat-label">Campus Pickup</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Interactive 3D Canvas -->
+      <div class="canvas-wrapper">
+        <div class="canvas-hud-top">
+          <div class="hud-pill">
+            <i data-lucide="radio" style="width:12px; height:12px; display:inline; vertical-align:middle; color:#10b981;"></i>
+            <span>PEER MESH: ACTIVE</span>
+          </div>
+          <div class="hud-pill">
+            <span>3D INTERACTIVE HUB</span>
+          </div>
+        </div>
+
+        <canvas id="hero-3d-canvas"></canvas>
+
+        <div id="canvas-tooltip"></div>
+
+        <div class="canvas-controls">
+          <div class="canvas-hint">
+            <i data-lucide="move" style="width:12px; height:12px;"></i>
+            <span>Move mouse to tilt • Drag to orbit in 3D</span>
+          </div>
+
+          <div class="control-btn-group">
+            <button id="btn-toggle-wireframe" class="control-pill-btn" title="Toggle Blueprint Wireframe Mode">
+              <i data-lucide="box" style="width:12px; height:12px;"></i>
+              <span>Blueprint Wire</span>
+            </button>
+            <button id="btn-toggle-rotate" class="control-pill-btn active" title="Toggle Auto-Rotation">
+              <i data-lucide="pause" style="width:12px; height:12px;"></i>
+              <span>Orbiting</span>
+            </button>
+            <button id="btn-reset-view" class="control-pill-btn" title="Reset 3D Camera">
+              <i data-lucide="refresh-cw" style="width:12px; height:12px;"></i>
+              <span>Reset</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       Products Hub (Search, Category Filters, Smooth 3D Mouse Tilt Cards)
+       ========================================================================= -->
+  <section class="section-wrapper" id="products-hub">
+    <div class="container">
+      <div class="section-header">
+        <span class="tech-sub">Lending Marketplace</span>
+        <h2 class="section-title">Available Products for Loan</h2>
+        <p class="section-description">
+          Inspect, reserve, and borrow lab-grade engineering gear from students in your department.
+        </p>
+      </div>
+
+      <!-- Search & Category Filters -->
+      <div class="hub-toolbar">
+        <div class="toolbar-top">
+          <div class="search-box-wrapper">
+            <i data-lucide="search" class="search-icon" style="width:18px; height:18px;"></i>
+            <input type="text" id="gear-search-input" class="search-input" placeholder="Search products by model, brand, department (e.g. Casio, Arduino, Rotring, Multimeter)...">
+            <span class="search-shortcut">⌘K</span>
+          </div>
+          <button class="btn btn-primary" data-open-modal="post-gear" style="flex-shrink:0;">
+            <i data-lucide="plus" style="width:16px; height:16px;"></i>
+            <span>+ List Your Gear</span>
+          </button>
+        </div>
+
+        <div class="filter-pills-row">
+          <!-- Dynamic Category Pills -->
+          <div class="category-pills" id="category-pills-container">
+            <!-- Rendered by js/app.js -->
+          </div>
+
+          <!-- Availability & Counter -->
+          <div class="inventory-meta">
+            <label style="display:flex; align-items:center; gap:0.4rem; cursor:pointer;">
+              <input type="checkbox" id="filter-available-only" style="accent-color:var(--cyan-primary);">
+              <span>Available to Borrow Now</span>
+            </label>
+            <span>•</span>
+            <span id="active-items-count">Loading products...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products Grid (With Smooth Spring 3D Mouse Parallax Tilt) -->
+      <div class="equipment-grid" id="equipment-grid">
+        <!-- Rendered dynamically by js/app.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       Footer & Authors
+       ========================================================================= -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <div class="brand">
+            <div class="brand-icon">
+              <i data-lucide="cpu" style="width:18px; height:18px;"></i>
+            </div>
+            <div class="brand-text">
+              <span class="brand-title">CampusGear<span style="color:var(--cyan-primary);">P2P</span></span>
+              <span class="brand-course">BCE23EM01 • Applied Frameworks</span>
+            </div>
+          </div>
+          <p>
+            A dedicated campus equipment lending platform enabling students to share scientific calculators, microcontrollers, drafting boards, and lab gear safely and affordably.
+          </p>
+        </div>
+
+        <div class="footer-authors-box">
+          <h4>Project Authors</h4>
+          <div class="author-chip">
+            <span>Yash Patange</span>
+            <span>125B1B348</span>
+          </div>
+          <div class="author-chip">
+            <span>Pranjal Swami</span>
+            <span>125B1B141</span>
+          </div>
+          <div style="font-size:0.75rem; color:var(--text-dim); margin-top:0.4rem;">
+            Course: BCE23EM01 | Applied Frameworks
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>© 2026 CampusGear P2P Lending Network. All rights reserved.</div>
+        <div>Smooth 3D Parallax & Momentum Inertia Controls.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================================================================
+       Modal 1: Borrow Product Modal
+       ========================================================================= -->
+  <div class="modal-overlay" id="borrow-modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>Borrow Academic Product</h3>
+        <button class="modal-close-btn" data-modal-close>
+          <i data-lucide="x" style="width:20px; height:20px;"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="borrow-modal-content">
+        <!-- Injected dynamically by js/app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       Modal 2: List / Lend Product Modal
+       ========================================================================= -->
+  <div class="modal-overlay" id="post-gear-modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>List Product for Lending</h3>
+        <button class="modal-close-btn" data-modal-close>
+          <i data-lucide="x" style="width:20px; height:20px;"></i>
+        </button>
+      </div>
+      <form id="post-gear-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Product Name & Model</label>
+            <input type="text" id="post-title" class="form-input" placeholder="e.g. Casio fx-991EX ClassWiz, Arduino Uno Kit, Rotring Compass" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Category</label>
+              <select id="post-category" class="form-select">
+                <option value="calculators">Calculators</option>
+                <option value="microcontrollers">Microcontrollers & IoT</option>
+                <option value="drafting">Drafting & Architecture</option>
+                <option value="lab">Lab & Testing</option>
+                <option value="audio_visual">AR/VR & Media</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Product Image</label>
+              <select id="post-image" class="form-select">
+                <option value="assets/calc.jpg">Scientific Calculator (Casio ClassWiz)</option>
+                <option value="assets/microcontroller.jpg">Arduino & Sensor Kit</option>
+                <option value="assets/drafting.jpg">Technical Drafting & Compass Set</option>
+                <option value="assets/multimeter.jpg">Digital Storage Oscilloscope & Meter</option>
+                <option value="assets/raspberry_pi.jpg">Raspberry Pi 4 Desktop Kit</option>
+                <option value="assets/vr_headset.jpg">Meta Quest VR Headset</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Refundable Deposit ($)</label>
+              <input type="number" id="post-deposit" class="form-input" min="0" max="200" value="20" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Dorm / Campus Pickup Location</label>
+              <input type="text" id="post-location" class="form-input" placeholder="e.g. Hall 4 - Room 204 or ECE Lab" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Description & Accessories Included</label>
+            <textarea id="post-desc" class="form-textarea" rows="3" placeholder="Describe the working condition, included cables, manual, etc." required></textarea>
+          </div>
+
+          <div class="condition-check-box">
+            <label class="check-item" style="cursor:pointer;">
+              <input type="checkbox" id="post-condition-verify" checked required>
+              <span style="color:#f1f5f9; font-size:0.85rem;">
+                I confirm this gear is fully operational and I will verify condition upon handover.
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-modal-close>Cancel</button>
+          <button type="submit" class="btn btn-primary">
+            <i data-lucide="check" style="width:18px; height:18px;"></i>
+            <span>List Product for Lending</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Rack Container -->
+  <div id="toast-rack"></div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/three-scene.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
